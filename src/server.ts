@@ -6,6 +6,6 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/", categoriesRoutes);
+app.use("/categories", categoriesRoutes);
 
 app.listen(4001, () => console.log("server running on port 4001"));

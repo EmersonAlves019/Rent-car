@@ -1,4 +1,4 @@
-import Specification from "../../model/Specification";
+import Specification from "../../models/Specification";
 import ISpecificationRepository, {
   ICreateSpecificationDTO,
 } from "../ISpecificationRepository";
@@ -6,23 +6,19 @@ import ISpecificationRepository, {
 export default class SpecificationRepository
   implements ISpecificationRepository
 {
-  private specification: Specification[];
-
-  constructor() {
-    this.specification = [];
+  async create({
+    name,
+    description,
+  }: ICreateSpecificationDTO): Promise<Specification> {
+    const specification = await Specification.create({ name, description });
+    return specification.save();
   }
 
-  create({ name, description }: ICreateSpecificationDTO): void {
-    const specification = new Specification();
-    Object.assign(specification, {
-      name,
-      description,
-      created_at: new Date(),
+  async findByName(name: string): Promise<Specification> {
+    return Specification.findOne({
+      where: {
+        name,
+      },
     });
-    this.specification.push(specification);
-  }
-
-  findByName(name: string): Specification {
-    return this.specification.find((each) => each.name === name);
   }
 }

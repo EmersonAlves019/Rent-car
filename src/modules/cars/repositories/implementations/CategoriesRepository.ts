@@ -1,43 +1,29 @@
-import Category from "../../model/Category";
+import Category from "../../models/cars/Category";
 import {
   ICategoriesRepository,
   ICreateCategoryDTO,
 } from "../ICategoriesRepository";
 
 class CategoriesRepository implements ICategoriesRepository {
-  private categories: Category[];
-
-  private constructor() {
-    this.categories = [];
-  }
-  // eslint-disable-next-line no-use-before-define
-  private static INSTANCE: CategoriesRepository;
-
-  public static getInstance(): CategoriesRepository {
-    if (!CategoriesRepository.INSTANCE) {
-      CategoriesRepository.INSTANCE = new CategoriesRepository();
-    }
-    return CategoriesRepository.INSTANCE;
-  }
-
-  create({ name, description }: ICreateCategoryDTO): void {
-    const category = new Category();
-
-    Object.assign(category, {
+  async create({ name, description }: ICreateCategoryDTO): Promise<Category> {
+    const category = Category.build({
       name,
       description,
-      created_at: new Date(),
     });
 
-    this.categories.push(category);
+    return category.save();
   }
 
-  list(): Category[] {
-    return this.categories;
+  async list(): Promise<Category[]> {
+    return Category.findAll();
   }
 
-  findByName(name: string): Category {
-    return this.categories.find((c) => c.name === name);
+  async findByName(name: string) {
+    return Category.findOne({
+      where: {
+        name,
+      },
+    });
   }
 }
 
